@@ -43,7 +43,7 @@ int main() {
     
     void *mem;
 
-    mem = mmap(NULL, 120, PROT_READ | PROT_WRITE, MAP_ANONYMOUS, 0, 0);
+    mem = mmap(NULL, 120, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, 0, 0);
 
     perror("mmap"); // This will print the most recent error (even if there are multiple processes running)
                     // The most recent error is stored in a global variable called errno (you can look at it in <errno.h>)
@@ -56,7 +56,7 @@ int main() {
         // void* mmap(void* addr,   // linux can ignore the address where you ask it to put the memory
             // size_t length,
             // int prot,
-            // int flags,
+            // int flags,           // MAP_FIXED makes it so that Linux has to place the memory at the address you give it
             // int fd,
             // off_t offset);
 
