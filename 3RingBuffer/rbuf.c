@@ -11,4 +11,28 @@ struct RingBuffer
     char *buffer;   // The actual data storage
 };
 
+RingBuffer* rb_new(int capacity) {
+    struct RingBuffer *rb;
+    if (capacity <= 0) {
+        // Capacity is invalid.
+        return NULL;
+    }
+    if (!(rb = (struct RingBuffer *)malloc(sizeof(*rb)))) {
+        // Out of memory.
+        return NULL;
+    }
+    // If we get here, all is well with the memory.
+    rb->at = 0;
+    rb->size = 0;
+    rb->capacity = capacity;
+    rb->buffer = (char *)calloc(rb->capacity, sizeof(char));
+    if (!rb->buffer) {
+        // We were able to create the structure in memory,
+        // but not the buffer. We need both, so free the
+        // structure and return NULL (error).
+        free(rb);
+        return NULL;
+    }
+    return rb;
+}
 
