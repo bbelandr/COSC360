@@ -4,6 +4,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h> // For malloc calloc and free
+// #include <stdio.h>  // For debugging
 
 // Forward declaration for the opaque structure.
 struct Vector;
@@ -14,12 +16,12 @@ typedef struct Vector Vector;
 // Allocation/creation of a vector
 Vector *vector_new(void);                               // Creates a new empty vector on the heap
 Vector *vector_new_with_capacity(int capacity);         // Creates a new vector with capacity amount of elements
-void    vector_free(Vector *vec);
+void    vector_free(Vector *vec);                       // Deallocates the heap values and then the vector itself
 void    vector_resize(Vector *vec, int new_size);
 void    vector_reserve(Vector *vec, int new_capacity);
 
 // Element functions
-void    vector_push(Vector *vec, int64_t value);
+void    vector_push(Vector *vec, int64_t value);                // Places a new value onto the vector. If there isn't enough space in capacity, resizes the vector so that it it can house the value
 void    vector_insert(Vector *vec, int index, int64_t value);
 bool    vector_remove(Vector *vec, int index);
 bool    vector_get(Vector *vec, int index, int64_t *value);
