@@ -1,6 +1,7 @@
 // Benjamin Belandres
 
 #include "rbuf.h"
+#include <stdlib.h>
 
 struct RingBuffer
 {
