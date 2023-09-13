@@ -57,7 +57,7 @@ int rb_capacity(const struct RingBuffer *rb) {
     return rb->capacity;
 }
 
-// Adds data to the RingBuffer
+// Adds data to the RingBuffer where the at pointer is looking
 // Returns true if the data was added successfully, false if not
 bool rb_push(struct RingBuffer *rb, char data) {
     // Check if the capacity can fit the new value
@@ -67,13 +67,23 @@ bool rb_push(struct RingBuffer *rb, char data) {
         rb->buffer[rb->at] = data;
 
         // increment at and the size
-        rb->at++;
         rb->size++;
+        rb->at++;
+        
+        // Wrapping the at pointer around if it has reached capacity
+        if (rb->at > rb->capacity - 1) {
+            rb->at = rb->at % rb->capacity;
+        }
 
         return true;
     }
     else {
         return false;
     }
+
+}
+
+// Pops the next 
+rb_pop(struct RingBuffer *rb, char *data) {
 
 }
