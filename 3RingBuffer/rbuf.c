@@ -11,6 +11,8 @@ struct RingBuffer
     char *buffer;   // The actual data storage
 };
 
+// Makes a new buffer of size 0 and whatever capacity specified
+// Returns a pointer to the new RingBuffer or NULL if there isn't enough memory or the capacity is invalid
 RingBuffer* rb_new(int capacity) {
     struct RingBuffer *rb;
     if (capacity <= 0) {
@@ -36,3 +38,7 @@ RingBuffer* rb_new(int capacity) {
     return rb;
 }
 
+void rb_free(RingBuffer *rb) {
+    free(rb->buffer);
+    free(rb);
+}
