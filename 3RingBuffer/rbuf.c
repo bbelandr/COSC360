@@ -59,5 +59,20 @@ int rb_capacity(const struct RingBuffer *rb) {
 // Adds data to the RingBuffer
 // Returns true if the data was added successfully, false if not
 bool rb_push(struct RingBuffer *rb, char data) {
-    
+    // Check if the capacity can fit the new value
+    if (rb->size < rb->capacity) {
+        
+        // Place the new value into buffer[at]
+        rb->buffer[rb->at] = data;
+
+        // increment at and the size
+        rb->at++;
+        rb->size++;
+
+        return true;
+    }
+    else {
+        return false;
+    }
+
 }
