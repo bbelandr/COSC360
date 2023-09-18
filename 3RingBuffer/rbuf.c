@@ -2,6 +2,7 @@
 
 #include "rbuf.h"
 #include <stdlib.h>
+#include <stdio.h>  // For debugging
 
 struct RingBuffer
 {
@@ -58,44 +59,51 @@ int rb_capacity(const struct RingBuffer *rb) {
     return rb->capacity;
 }
 
+// Advances the at index to the next value and wraps around
+// the ring if it goes past the end
 static void incrementAt(struct RingBuffer *rb) {
     rb->at++;
     
-    // Wrapping the at pointer around if it has reached capacity
+    // Wrapping the at index around if it has reached capacity
     if (rb->at > rb->capacity - 1) {
         rb->at = rb->at % rb->capacity;
     }
+    // DEBUG printf("At is currently at index: %d\n", rb->at);
 }
 
 // Adds data to the RingBuffer where the at pointer is looking
 // Returns true if the data was added successfully, false if not
-bool rb_push(struct RingBuffer *rb, char data) {
-    // Check if the capacity can fit the new value
-    if (rb->size < rb->capacity) {
+// bool rb_push(struct RingBuffer *rb, char data) {
+//     // Check if the capacity can fit the new value
+//     if (rb->size < rb->capacity) {
         
-        // Place the new value into buffer[at]
-        rb->buffer[rb->at] = data;
+//         // Place the new value into buffer[at]
+//         rb->buffer[rb->at] = data;
 
-        // increment the at pointer and the size
-        rb->size++;
-        rb->at++;
+//         printf("Added %c to the buffer at %d\n", rb->buffer[rb->at], rb->at);
+
+//         incrementAt(rb);
         
-        // Wrapping the at pointer around if it has reached capacity
-        if (rb->at > rb->capacity - 1) {
-            rb->at = rb->at % rb->capacity;
-        }
+//         rb->size++;
+//         return true;
+//     }
+//     else {
+//         return false;
+//     }
 
-        return true;
-    }
-    else {
-        return false;
-    }
+// }
 
-}
 
-// Pops the next value off from the buffer and stores it in data
-// If data is NULL, nothing is stored in data
-// Returns true if it removed data, false if it didn't
-bool rb_pop(struct RingBuffer *rb, char *data) {
-    return 0;
-}
+// // Pops the next value off from the buffer and stores it in data
+// // If data is NULL, nothing is stored in data
+// // Returns true if it removed data, false if it didn't
+// bool rb_pop(struct RingBuffer *rb, char *data) {
+    
+//     if (data != NULL) {
+//         // Data actually points to somewhere in memory
+//         *data = rb->buffer[rb->at];
+//     }
+
+//     incrementAt(rb);
+//     return false;
+// }
