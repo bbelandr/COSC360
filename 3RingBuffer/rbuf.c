@@ -97,5 +97,5 @@ bool rb_push(struct RingBuffer *rb, char data) {
 // If data is NULL, nothing is stored in data
 // Returns true if it removed data, false if it didn't
 bool rb_pop(struct RingBuffer *rb, char *data) {
-
+    return 0;
 }
