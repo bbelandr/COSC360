@@ -73,37 +73,53 @@ static void incrementAt(struct RingBuffer *rb) {
 
 // Adds data to the RingBuffer where the at pointer is looking
 // Returns true if the data was added successfully, false if not
-// bool rb_push(struct RingBuffer *rb, char data) {
-//     // Check if the capacity can fit the new value
-//     if (rb->size < rb->capacity) {
+bool rb_push(struct RingBuffer *rb, char data) {
+    // Check if the capacity can fit the new value
+    if (rb->size < rb->capacity) {
         
-//         // Place the new value into buffer[at]
-//         rb->buffer[rb->at] = data;
+        // Place the new value into buffer[at]
+        rb->buffer[rb->at] = data;
 
-//         printf("Added %c to the buffer at %d\n", rb->buffer[rb->at], rb->at);
+        // printf("Added %c to the buffer at %d\n", rb->buffer[rb->at], rb->at);
 
-//         incrementAt(rb);
+        incrementAt(rb);
         
-//         rb->size++;
-//         return true;
-//     }
-//     else {
-//         return false;
-//     }
+        rb->size++;
+        return true;
+    }
+    else {
+        return false;
+    }
 
-// }
+}
 
 
-// // Pops the next value off from the buffer and stores it in data
-// // If data is NULL, nothing is stored in data
-// // Returns true if it removed data, false if it didn't
-// bool rb_pop(struct RingBuffer *rb, char *data) {
+// Pops the next value off from the buffer and stores it in data
+// If data is NULL, nothing is stored in data
+// Returns true if it removed data, false if it didn't
+bool rb_pop(struct RingBuffer *rb, char *data) {
     
-//     if (data != NULL) {
-//         // Data actually points to somewhere in memory
-//         *data = rb->buffer[rb->at];
-//     }
+    if (rb->size > 0) {
 
-//     incrementAt(rb);
-//     return false;
-// }
+        if (data != NULL) {
+            // Data actually points to somewhere in memory
+            *data = rb->buffer[rb->at];
+        }
+
+        rb->size--;
+
+        incrementAt(rb);
+
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+// Returns the value of the next byte
+// Returns 0 if nothing is found
+char rb_peek(const struct RingBuffer *rb) {
+
+}

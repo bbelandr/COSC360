@@ -22,15 +22,22 @@ int main() {
 
 
     char val;
+    bool ret;
 
-    // rb_pop(rb, &val);
-    printf("%d Popped: %d\n", rb_pop(rb, &val), val);
-    // printf("%d Popped: %d\n", rb_pop(rb, &val), val);
-    // printf("%d Popped: %d\n", rb_pop(rb, &val), val);
-    // printf("%d Popped: %d\n", rb_pop(rb, &val), val);
-    // printf("%d Popped: %d\n", rb_pop(rb, &val), val);
-    // printf("%d Popped: %d\n", rb_pop(rb, &val), val);
-    // printf("%d Popped: %d\n", rb_pop(rb, &val), val);
+    ret = rb_pop(rb, &val);
+    printf("%d Popped (Size %d): %c\n", ret, rb_size(rb), val);
+    ret = rb_pop(rb, &val);
+    printf("%d Popped (Size %d): %c\n", ret, rb_size(rb), val);
+    ret = rb_pop(rb, &val);
+    printf("%d Popped (Size %d): %c\n", ret, rb_size(rb), val);
+    ret = rb_pop(rb, &val);
+    printf("%d Popped (Size %d): %c\n", ret, rb_size(rb), val);
+    ret = rb_pop(rb, &val);
+    printf("%d Popped (Size %d): %c\n", ret, rb_size(rb), val);
+    ret = rb_pop(rb, &val);
+    printf("%d Popped (Size %d): %c\n", ret, rb_size(rb), val);
+    ret = rb_pop(rb, &val);
+    printf("%d Popped (Size %d): %c\n", ret, rb_size(rb), val);
 
     rb_free(rb);
     return 0;
