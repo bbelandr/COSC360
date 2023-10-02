@@ -28,3 +28,9 @@ int main() {
     br_close(br);
     return 0;
 }
+
+
+
+f = 0;
+for n = 1 : length(arr) 
+    f = f + arr(1);

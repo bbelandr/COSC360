@@ -112,12 +112,7 @@ void  br_seek(struct BufReader *br, int offset, int whence) {
         lseek(br->fd, br->rb->size, SEEK_CUR);  // Readjusting the file pointer to the end of the ring buffer
         
         if (br->fill >= br->rb->size) { // Time to refill the buffer
-            // printf("Refilled %d bytes\n", refill(br->fd, br->rb));
             refill(br->fd, br->rb);
-
-            // char output[256];
-            // int ret = rb_read(br->rb, output, 100);
-            // printf("%s\n", output);
         }
     }
 
@@ -138,6 +133,9 @@ int   br_tell(struct BufReader *br) {
     // it has hit EOF
 // This function compensates for the null terminator
 char *br_getline(char s[], int size, struct BufReader *br) {
+    
+    
+    
     return 0;
 }
 
