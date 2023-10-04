@@ -3,6 +3,7 @@
 
 
 #include <stdio.h>
+#include <sys/mman.h>
 #include "pageAlloc.h"
 
 bool page_init(int pages) {
@@ -13,8 +14,11 @@ bool page_init(int pages) {
 	if (pages < 2) {
 		return false;
 	}
-	if (pages > MAX_PAGES) {
+	else if (pages > MAX_PAGES) {
 		return false;
+	}
+	else {
+		mmap(NULL, pages * PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS, )
 	}
 
 	return false;
