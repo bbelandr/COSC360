@@ -1,3 +1,14 @@
+// Benjamin Belandres
+
+// For future reference, this lab is unfinished. I planned on submitting late for a small penalty
+// just to realize that no late submissions would be accepted on this lab.
+
+// Fuck me I guess.
+// I finished my Ringbuffer code on time and I still got a 40% because I accidentally submitted 
+// the wrong version of my code and couldn't resubmit it.
+
+// I love Steven Marz but his grading philosophy sucks
+
 #include "bufread.h"
 #include "rbuf.h"
 #include <fcntl.h>
