@@ -2,10 +2,10 @@ all:	main
 
 
 run:	main
-	@./main
+	@./exe/main
 
 main:	main.c
-	gcc -Wall -g -o main main.c
+	gcc -Wall -g -o exe/main main.c
 
 clean:
-	rm -f main
+	rm -f exe/main
