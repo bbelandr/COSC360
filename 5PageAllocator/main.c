@@ -4,7 +4,11 @@
 
 #include <stdio.h>
 #include <sys/mman.h>
+#include <errno.h>
 #include "pageAlloc.h"
+
+void *memoryPool;
+int numPages;
 
 bool page_init(int pages) {
 	const int PAGE_SIZE = 4096;		// How large a single page is in bytes
@@ -18,17 +22,30 @@ bool page_init(int pages) {
 		return false;
 	}
 	else {
-		mmap(NULL, pages * PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS, )
+		memoryPool = mmap(NULL, pages * PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS, -1, 0);
+		if (memoryPool == MAP_FAILED) {	// MAP_FAILED is just (void *)-1
+			perror("Couldn't map memory");
+			return false;
+		}
+		
+		numPages = pages;
+		return true;
 	}
+}
 
-	return false;
+void page_deinit(void) {
+	const int PAGE_SIZE = 4096;		// How large a single page is in bytes
+	if (munmap(memoryPool, numPages * PAGE_SIZE) == -1) {
+		perror("Couldn't unmap memory");
+	}
 }
 
 int main() {
 
 	printf("I like chicken and dizza\n");
 	
-	page_init(1);
+	page_init(4);
+	page_deinit();
 	
 	return 0;
 }
