@@ -63,8 +63,8 @@ static int calcMappedBytes(const int pages)
 	// const int bookkeepingBytes = calcBookkeepingBytes(pages);	// How many bytes should actively be used to track the pages
 	const int bookkeepingPadded = calcBookkeepingPadded(pages); // Aligned to the nearest page
 
-	printf("The pages begin at %d: Total of %d bytes initialized for the pages\n", bookkeepingPadded, pagesSize);
-	printf("%d bytes total\n", bookkeepingPadded + pagesSize);
+	// DEBUG printf("The pages begin at %d: Total of %d bytes initialized for the pages\n", bookkeepingPadded, pagesSize);
+	// DEBUG printf("%d bytes total\n", bookkeepingPadded + pagesSize);
 
 	return pagesSize + bookkeepingPadded;
 }
@@ -146,7 +146,7 @@ void *page_alloc(int pages)
 		}
 	}
 
-	printf("A line of unallocated pages was found at page %d of length %d\n", beginningPageNum, numContiguousEmptyPages);
+	// DEBUG printf("A line of unallocated pages was found at page %d of length %d\n", beginningPageNum, numContiguousEmptyPages);
 
 	// Setting the bookkeeping bits
 	for (int i = 0; i < pages - 1; i++)
@@ -154,15 +154,15 @@ void *page_alloc(int pages)
 		int bookkeepingByte = (beginningPageNum + i) / 4;
 		int bookkeepingBit = (beginningPageNum + i) % 4 * 2;
 
-		printf("Setting this byte and bit: %d %d\n", bookkeepingByte, bookkeepingBit);
+		// DEBUG printf("Setting this byte and bit: %d %d\n", bookkeepingByte, bookkeepingBit);
 		set_bit(((char *)memoryPool) + bookkeepingByte, bookkeepingBit);
 	}
 
 	// Setting the final bit and marking it as the end of the continuous pages
-	int finalByte = (beginningPageNum + pages - 1) / 4;
-	int finalBit = (beginningPageNum + pages - 1) % 4 * 2;
+	// int finalByte = (beginningPageNum + pages - 1) / 4;
+	// int finalBit = (beginningPageNum + pages - 1) % 4 * 2;
 
-	printf("Setting the final byte and bits: %d %d and %d %d\n", finalByte, finalBit, finalByte, finalBit + 1);
+	// DEBUG printf("Setting the final byte and bits: %d %d and %d %d\n", finalByte, finalBit, finalByte, finalBit + 1);
 
 	set_bit(((char *)memoryPool) + ((beginningPageNum + pages - 1) / 4), (beginningPageNum + pages - 1) % 4 * 2);	  // Marking it as allocated
 	set_bit(((char *)memoryPool) + ((beginningPageNum + pages - 1) / 4), (beginningPageNum + pages - 1) % 4 * 2 + 1); // Setting the end of the pages
@@ -181,14 +181,14 @@ void *page_alloc(int pages)
 void page_free(void *addr)
 {
 	int currentPageNum = (int)(addr - memoryPool - calcBookkeepingPadded(numPages)) / PAGE_SIZE;
-	// printf("The beginning page number of the freed section: %d\n", currentPageNum);
+	// DEBUG printf("The beginning page number of the freed section: %d\n", currentPageNum);
 
 	int bookkeepingByte = currentPageNum / 4;
 	int bookkeepingBit = currentPageNum % 4 * 2;
 	while (test_bit(((char *)memoryPool)[bookkeepingByte], bookkeepingBit + 1) != 1)
 	{ // Checking if we've hit the last page
 
-		printf("Clearing this byte and bit: %d %d and %d %d\n", bookkeepingByte, bookkeepingBit, bookkeepingByte, bookkeepingBit + 1);
+		// DEBUG printf("Clearing this byte and bit: %d %d and %d %d\n", bookkeepingByte, bookkeepingBit, bookkeepingByte, bookkeepingBit + 1);
 
 		// Clearing both bookkeeping bits related to this page
 		clear_bit((char *)memoryPool + bookkeepingByte, bookkeepingBit);
@@ -200,7 +200,7 @@ void page_free(void *addr)
 		bookkeepingBit = currentPageNum % 4 * 2;
 	}
 	// Clearing the final bookkeeping bits
-	printf("Clearing this byte and bit: %d %d and %d %d\n", bookkeepingByte, bookkeepingBit, bookkeepingByte, bookkeepingBit + 1);
+	// DEBUG printf("Clearing this byte and bit: %d %d and %d %d\n", bookkeepingByte, bookkeepingBit, bookkeepingByte, bookkeepingBit + 1);
 	clear_bit((char *)memoryPool + bookkeepingByte, bookkeepingBit);
 	clear_bit((char *)memoryPool + bookkeepingByte, bookkeepingBit + 1);
 }
@@ -216,7 +216,7 @@ int pages_taken(void)
 		for (int j = 0; j < 4; j++)
 		{
 
-			// printf("We are here: %x\n", (char*)memoryPool + i);
+			// DEBUG printf("We are here: %x\n", (char*)memoryPool + i);
 			if (test_bit(((char *)memoryPool)[i], j * 2) == 1)
 			{ // This checks the leftmost bit that records if the page has been allocated
 				totalPages++;
