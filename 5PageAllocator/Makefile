@@ -1,13 +1,13 @@
-all:	main
+all:	exe/main
 
 
-run:	main
+run:	exe/main
 	@./exe/main
 
-memory:	main
+memory:	exe/main
 	@valgrind ./exe/main
 
-main:	main.c
+exe/main:	main.c
 	@gcc -Wall -g -o exe/main main.c
 
 clean:
