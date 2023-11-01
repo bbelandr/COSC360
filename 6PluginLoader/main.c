@@ -1,4 +1,8 @@
-// Benjamin Belandres
+// Benjamin Belandres, Plugin Loader
+// This program takes plugins from shared object libraries and uses them
+	// All exports from a .so file must fit the structure of the export 
+	// struct in the code
+
 #include <stdio.h>
 #include <dlfcn.h>
 #include <string.h>
@@ -55,7 +59,7 @@ int main() {
 
 		}
 
-		else if (strcmp(cmd, "list") == 0) {
+		else if (strcmp(cmd, "list") == 0 || strcmp(cmd, "plugins") == 0) {
 			// Listing all of the loaded plugins 
 			int i;
 			for (i = 0; i < vector_size(handles); i++) {
