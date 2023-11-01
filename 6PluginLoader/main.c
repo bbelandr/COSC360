@@ -35,27 +35,17 @@ int main() {
 			currentHandle = dlopen(cmd, RTLD_LAZY);
 
 			if (!currentHandle) {	// Checking if the plugin was successfully loaded
-				puts(dlerror());
+				// puts(dlerror());
+				printf("%s: unable to load\n", cmd);
+					
+			}
+			else {
+				vector_push(handles, (int64_t)currentHandle); 
+				currentExport = dlsym(currentHandle, "export");
+				currentExport->init();
 
-				// Closing all of the handles like in the quit command
-				for (int i = 0; i < vector_size(handles); i++) {
-					if (vector_get(handles, i, (int64_t*)&currentHandle)) {
-
-
-						currentExport = dlsym(currentHandle, "export");
-						currentExport->fini();
-						dlclose(currentHandle);
-
-					}
-
-				}
-				vector_free(handles);
-				return -1;
 			}
 
-			vector_push(handles, (int64_t)currentHandle); 
-			currentExport = dlsym(currentHandle, "export");
-			currentExport->init();
 
 		}
 
@@ -131,10 +121,6 @@ int main() {
 
 	}
 
-
-	// myExport = dlsym(handle, "export");	// Getting the exports from the handle
-
-	// printf("%s\n", myExport->name);
 	
 	return 0;
 }
