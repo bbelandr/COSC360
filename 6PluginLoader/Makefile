@@ -1,15 +1,19 @@
-all:	libtest.so exe/main
+all:	libfmadd.so libfmadd2.so main
 
-run:	exe/main
-	@./exe/main
+run:	all
+	@./main
 
-memory:	exe/main
-	@valgrind ./exe/main
+memory:	main
+	@valgrind ./main
 
-exe/main:	main.c
-	@gcc -Wall -g -o exe/main main.c
+main:	main.c
+	@gcc -g -Wall -o main main.c -L/home/smarz1/courses/cosc360/stud/ -lcvector -ldl
 
+libfmadd.so:	dingus.c 
+	@gcc -Wall -O0 -g -shared -fPIC -o libfmadd.so dingus.c 
 
+libfmadd2.so:	dingus2.c 
+	@gcc -Wall -O0 -g -shared -fPIC -o libfmadd2.so dingus2.c 
 
 clean:	
-	rm -f exe/main
+	rm -f main && rm -f libfmadd.so && rm -f libfmadd2.so
