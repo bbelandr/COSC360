@@ -39,7 +39,7 @@ int main() {
 
 				// Closing all of the handles like in the quit command
 				for (int i = 0; i < vector_size(handles); i++) {
-					if (vector_get(handles, i, &currentHandle)) {
+					if (vector_get(handles, i, (int64_t*)&currentHandle)) {
 
 
 						currentExport = dlsym(currentHandle, "export");
@@ -63,7 +63,7 @@ int main() {
 			// Listing all of the loaded plugins 
 			int i;
 			for (i = 0; i < vector_size(handles); i++) {
-				if (vector_get(handles, i, &currentHandle)) {
+				if (vector_get(handles, i, (int64_t*)&currentHandle)) {
 
 					currentExport = dlsym(currentHandle, "export");
 					printf("%s\n", currentExport->name);
@@ -79,7 +79,7 @@ int main() {
 			scanf("%64s", cmd);	// Reusing the cmd string to store the name
 
 			for (int i = 0; i < vector_size(handles); i++) {
-				if (vector_get(handles, i, &currentHandle)) {
+				if (vector_get(handles, i, (int64_t*)&currentHandle)) {
 
 					currentExport = dlsym(currentHandle, "export");
 
@@ -101,7 +101,7 @@ int main() {
 		else if (strcmp(cmd, "quit") == 0) {
 			// Closing all of the handles
 			for (int i = 0; i < vector_size(handles); i++) {
-				if (vector_get(handles, i, &currentHandle)) {
+				if (vector_get(handles, i, (int64_t*)&currentHandle)) {
 
 
 					currentExport = dlsym(currentHandle, "export");
@@ -119,7 +119,7 @@ int main() {
 
 		else {	// If none of the default commands work, then we start passing the command to the plugins
 			for (int i = 0; i < vector_size(handles); i++) {
-				if (vector_get(handles, i, &currentHandle)) {
+				if (vector_get(handles, i, (int64_t*)&currentHandle)) {
 
 					currentExport = dlsym(currentHandle, "export");
 					if (currentExport->cmd(cmd) != 0) {	// Implies a successful command
