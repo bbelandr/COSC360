@@ -5,7 +5,9 @@
 #include <stdio.h>
 
 int main() {
-
-    printf("%d\n", math(1, 2));
-    return 0;
+	
+//	printf("%d\n", math(1, 2));
+	void *handle = thread_pool_init(3);
+	printf("My handle is at %p\n", handle);
+	return 0;
 }

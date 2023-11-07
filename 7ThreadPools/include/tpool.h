@@ -2,7 +2,7 @@
 // Benjamin Belandres
 #include <stdbool.h>
 
-int math(int a, int b);
+// int math(int a, int b);
 
 // Thread Pool Functions
 void *thread_pool_init(int num_threads);    // Creates threads and places them into the waiting state
