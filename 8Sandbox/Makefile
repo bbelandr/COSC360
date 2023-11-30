@@ -1,10 +1,16 @@
-all: exe/sandbox
+all: exe/sandbox samples
 
-exe/sandbox:	sandbox.c
-	@gcc -Wall -g -o exe/sandbox sandbox.c
+exe/sandbox:	*.c
+	@gcc -Wall -g -o exe/sandbox *.c
 
-run:	exe/sandbox
+samples:	TestFiles/sampleProgram.c
+	@gcc -o TestFiles/sampleProgram TestFiles/sampleProgram.c
+
+run:	all
 	@./exe/sandbox
+
+memory:	exe/sandbox
+	@valgrind ./exe/sandbox
 
 clean:
 	@rm -f exe/sandbox
