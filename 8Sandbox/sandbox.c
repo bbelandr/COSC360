@@ -5,7 +5,14 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/resource.h>
+#include <sys/time.h>
+#include <fcntl.h>
 #include "vector.h"
+
+/* Resources:   https://stackoverflow.com/questions/12784766/check-substring-exists-in-a-string-in-c
+                https://www.geeksforgeeks.org/strtok-strtok_r-functions-c-examples/
+*/
 
 // Prints the prompt string for the sandbox
 void prompt() { 
@@ -14,7 +21,16 @@ void prompt() {
     getcwd(currentWorkingDirectory, sizeof(currentWorkingDirectory));
 
     // TODO: replace all $HOME substrings with ~
-    printf("%s@sandbox:%s> ", username, currentWorkingDirectory);
+    char *cwdPtr = strstr(currentWorkingDirectory, getenv("HOME"));
+    char *cwdStart = currentWorkingDirectory;
+    while (cwdPtr != NULL) {
+        cwdPtr += strlen(getenv("HOME")) - 1;
+        cwdPtr[0] = '~';
+        cwdStart = cwdPtr;
+        cwdPtr = strstr(cwdPtr, getenv("HOME"));
+
+    }
+    printf("%s@sandbox:%s> ", username, cwdStart);
 }
 
 char** parseInput(char *input) {
@@ -24,6 +40,16 @@ char** parseInput(char *input) {
     char *argument = NULL;
     do {
         argument = strtok_r(saveptr, " \t\r\n\v\f", &saveptr);  // Making sure strtok stops on any from of whitespace
+        
+        // Checking if the argument needs expanded from an environment variable
+        if (argument != NULL) {
+            if (argument[0] == '$'){
+                argument = getenv(argument + 1);
+                if (argument == NULL) {
+                    argument = "";
+                }
+            }
+        }
         vector_push_ptr(argVector, argument);
     } while(argument != NULL);
 
@@ -38,14 +64,40 @@ char** parseInput(char *input) {
 
 int main() {
 
+    // int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+    // fcntl(0, F_SETFL, flags | O_NONBLOCK);
+    printf("among us");
+    fd_set readSet;
 
     while (true) {
         prompt();
 
         // Parsing the input
-        char *input = NULL;
-        size_t length = 0;
-        getline(&input, &length, stdin);
+        char input[256];
+        size_t bytes = 0;
+
+        size_t j = 0;
+        int nfds = 0;
+        while (j < 30000000UL) {
+            FD_ZERO(&readSet);
+            FD_SET(STDIN_FILENO, &readSet);
+            select(STDIN_FILENO + 1, &readSet, NULL, NULL, &(struct timeval) {0, 1000});
+
+            if (nfds > 0 && FD_ISSET(STDIN_FILENO, &readSet)) {
+                bytes = read(STDIN_FILENO, input, sizeof(input) - 1);
+                if (bytes < 0) {
+                    perror("Read");
+                }
+                else {
+                    input[strcspn(input, "\n")] = '\0';
+                    break;
+                }
+                printf("%lu\n", j);
+                break;
+            }
+            j++;
+        }
+        
         
         char **argArray = parseInput(input);
 
@@ -54,17 +106,26 @@ int main() {
 
         // Internal commands
         if (strcmp("exit", argArray[0]) == 0) {
-            
+            // Free the memory allocated for each argument
+            // for (int i = 0;; i++) {
+            //     free(argArray[i]);
+            //     if (argArray[i] == NULL) {
+            //         break;
+            //     }
+            // }
+            // free(input);
             free(argArray);
-            free(input);
             return 0;
         }
         else if (strcmp("cd", argArray[0]) == 0) {
+            if (argArray[1] == NULL || strcmp(argArray[1], "~") == 0) {
+                argArray[1] = getenv("HOME");
+            }
             if (chdir(argArray[1]) == -1) {
                 perror(argArray[1]);
             }
         }
-        else if (strcmp("jobs", argArray[0])) {
+        else if (strcmp("jobs", argArray[0]) == 0) {
             // TODO: jobs
         }
         else {  // Creating a child process to execute a non-internal command
@@ -72,13 +133,15 @@ int main() {
             if (pid == 0) { // Making the child execute the command
                 execvp(argArray[0], argArray);
                 perror(argArray[0]);
+                free(argArray); // I used argArray to print a message within the child, so COW makes me have to free it in the child process
                 return -1;
             }
             int wstatus;
-            waitpid(pid, &wstatus, 0);
+            waitpid(pid, &wstatus, WNOHANG);
         } 
 
-        
+        free(argArray);
+        // free(input);
     }
     
     return 0;

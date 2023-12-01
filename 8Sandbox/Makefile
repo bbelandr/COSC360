@@ -10,7 +10,7 @@ run:	all
 	@./exe/sandbox
 
 memory:	exe/sandbox
-	@valgrind ./exe/sandbox
+	@valgrind --leak-check=full ./exe/sandbox
 
 clean:
 	@rm -f exe/sandbox
