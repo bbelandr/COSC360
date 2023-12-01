@@ -14,6 +14,11 @@
                 https://www.geeksforgeeks.org/strtok-strtok_r-functions-c-examples/
 */
 
+struct RunningProcess {
+    pid_t pid;
+    char **arguments;
+};
+
 // Prints the prompt string for the sandbox
 void prompt() { 
     char *username = getenv("USER");
@@ -64,8 +69,8 @@ char** parseInput(char *input) {
 
 int main() {
 
-    int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
-    fcntl(0, F_SETFL, flags | O_NONBLOCK);
+    // int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+    // fcntl(0, F_SETFL, flags | O_NONBLOCK);
     // printf("among us");
     // fd_set readSet;
 
@@ -73,17 +78,9 @@ int main() {
         prompt();
 
         // Parsing the input
-        char input[256];
-        ssize_t bytes = 0;
-        
-        while (true) {
-            bytes = read(STDIN_FILENO, input, sizeof(input) - 1);
-            if (bytes > 0) {
-                printf("%lu bytes read: %s\n", bytes, input);
-                break;
-            }
-        }
-        printf("fuck\n");
+        char *input;
+        size_t bytes = 0;
+        getline(&input, &bytes, stdin);
 
         char **argArray = parseInput(input);
 
@@ -99,7 +96,7 @@ int main() {
             //         break;
             //     }
             // }
-            // free(input);
+            free(input);
             free(argArray);
             return 0;
         }
@@ -122,12 +119,17 @@ int main() {
                 free(argArray); // I used argArray to print a message within the child, so COW makes me have to free it in the child process
                 return -1;
             }
+            // for (int i = 0; argArray[i] != NULL; i++) {
+            //     if (strcmp(argArray[i], "&") == 0) {
+                    
+            //     }
+            // }
             int wstatus;
-            waitpid(pid, &wstatus, WNOHANG);
+            waitpid(pid, &wstatus, 0);
         } 
 
         free(argArray);
-        // free(input);
+        free(input);
     }
     
     return 0;
