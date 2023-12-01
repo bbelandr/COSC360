@@ -64,41 +64,27 @@ char** parseInput(char *input) {
 
 int main() {
 
-    // int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
-    // fcntl(0, F_SETFL, flags | O_NONBLOCK);
-    printf("among us");
-    fd_set readSet;
+    int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(0, F_SETFL, flags | O_NONBLOCK);
+    // printf("among us");
+    // fd_set readSet;
 
     while (true) {
         prompt();
 
         // Parsing the input
         char input[256];
-        size_t bytes = 0;
-
-        size_t j = 0;
-        int nfds = 0;
-        while (j < 30000000UL) {
-            FD_ZERO(&readSet);
-            FD_SET(STDIN_FILENO, &readSet);
-            select(STDIN_FILENO + 1, &readSet, NULL, NULL, &(struct timeval) {0, 1000});
-
-            if (nfds > 0 && FD_ISSET(STDIN_FILENO, &readSet)) {
-                bytes = read(STDIN_FILENO, input, sizeof(input) - 1);
-                if (bytes < 0) {
-                    perror("Read");
-                }
-                else {
-                    input[strcspn(input, "\n")] = '\0';
-                    break;
-                }
-                printf("%lu\n", j);
+        ssize_t bytes = 0;
+        
+        while (true) {
+            bytes = read(STDIN_FILENO, input, sizeof(input) - 1);
+            if (bytes > 0) {
+                printf("%lu bytes read: %s\n", bytes, input);
                 break;
             }
-            j++;
         }
-        
-        
+        printf("fuck\n");
+
         char **argArray = parseInput(input);
 
 
